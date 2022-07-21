@@ -1,0 +1,7 @@
+- name: start and enable mysql service
+  service:
+    name: "{{item}}"
+    state: started
+    enabled: yes
+  loop:
+    "{{Service_name}}"

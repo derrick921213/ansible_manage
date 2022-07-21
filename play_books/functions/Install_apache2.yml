@@ -1,0 +1,61 @@
+---
+- name: Install Apache2 and Dependencies
+  apt:
+    name: "apache2"
+    state: latest
+  when: ansible_facts['os_family'] == "Debian"
+
+# - name: Install httpd and Dependencies
+#   dnf:
+#     name: "httpd"
+#     state: latest
+#   when: ansible_facts['os_family'] == "RedHat"
+
+- name: Recursively change ownership of a directory
+  file:
+    path: "/var/www/{{Dname}}"
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Add a web index
+  template:
+    src: "../../j2/Hello.j2"
+    dest: "/var/www/{{Dname}}/index.html"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Configure Apache2 website
+  template:
+    src: "../j2/web_site_conf.j2"
+    dest: "/etc/apache2/sites-available/{{Dname}}.conf"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: a2ensite Site
+  command: "/usr/sbin/a2ensite {{Dname}}"
+  args:
+    creates: /etc/apache2/sites-enabled/{{Dname}}.conf
+  notify:
+    - restart apache2
+
+- name: Check File
+  stat:
+    path: "/etc/apache2/sites-enabled/000-default.conf"
+  register: conf
+
+- name: a2dissite Site
+  command: "/usr/sbin/a2dissite 000-default"
+  when: conf.stat.exists
+  notify:
+    - restart apache2
+
+- name: Set firewall
+  ufw:
+    rule: allow
+    name: "Apache Full"

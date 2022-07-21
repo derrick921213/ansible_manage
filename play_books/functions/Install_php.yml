@@ -1,0 +1,19 @@
+---
+- name: Install PHP and Dependencies
+  apt:
+    name: "{{item}}"
+    state: latest
+  loop:
+    - php 
+    - libapache2-mod-php 
+    - php-mysql
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Add a php index
+  template:
+    src: "../../j2/php_info.j2"
+    dest: "/var/www/{{Domain_name}}/index.php"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_facts['os_family'] == "Debian"

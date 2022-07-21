@@ -1,0 +1,41 @@
+---
+- name: Install LAMP
+  hosts: hosted_web
+  vars_files:
+    - ../vars/DB_user.yml
+    - ../vars/Domain_name.yml
+  tasks:
+    - import_tasks: "functions/update_upgrade.yml"
+
+    - import_tasks: "functions/Install_apache2.yml"
+      vars: 
+        Dname:
+          "{{Domain_name}}"
+
+    - import_tasks: "functions/Install_php.yml"
+      vars: 
+        Dname:
+          "{{Domain_name}}"
+
+    - import_tasks: "functions/Install_mysql.yml"
+      vars: 
+        db:
+          "{{db_name}}"
+        db_u:
+          "{{db_user}}"
+        db_p:
+          "{{db_pass}}"
+
+    - import_tasks: "functions/Service.yml"
+      vars: 
+        Service_name:
+          - mysql
+          - apache2
+    
+    - name: Check that a page returns a status 200 and fail if the word AWESOME is not in the page contents
+      uri:
+        url: "http://192.168.2.32"
+        return_content: yes
+
+  handlers:
+    - import_tasks: "handlers/restart_apache2.yml"

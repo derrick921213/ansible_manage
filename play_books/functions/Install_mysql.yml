@@ -1,0 +1,24 @@
+---
+- name: Install Mysql and Dependencies
+  apt:
+    name: "{{item}}"
+    state: latest
+  loop:
+    - mysql-server
+    - mysql-client
+    - python3-mysqldb
+    - libmysqlclient-dev
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: creating medium_db
+  mysql_db:
+    name: "{{db}}"
+    state: present
+
+- name: creating mysql user (medium_post)
+  mysql_user:
+    name: "{{db_u}}"
+    password: "{{db_p}}"
+    priv: '*.*:ALL'
+    host: '%'
+    state: present
