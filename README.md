@@ -9,12 +9,13 @@
 |- vars/
 |- ansible.cfg
 |- hosts.ini
+```
 ## 目錄用途
 1. j2資料夾內是放template的檔案
 2. play_books內是放主要的playbook
 3. play_books/functions 放的是各個功能的tasks
 4. play_books/handlers 放的是所需要執行的handlers
-```
+
 
 ## 使用方法
 在play_books下寫一個main.yml的playbooks,在使用import_task/include_task去呼叫play_books/functions下的tasks
