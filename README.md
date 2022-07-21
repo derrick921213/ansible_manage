@@ -1,5 +1,6 @@
 # 使用ansible部署服務器
 ## 目錄結構
+```
 ./
 |- j2/
 |- play_books/
@@ -13,6 +14,7 @@
 2. play_books內是放主要的playbook
 3. play_books/functions 放的是各個功能的tasks
 4. play_books/handlers 放的是所需要執行的handlers
+```
 
 ## 使用方法
 在play_books下寫一個main.yml的playbooks,在使用import_task/include_task去呼叫play_books/functions下的tasks
